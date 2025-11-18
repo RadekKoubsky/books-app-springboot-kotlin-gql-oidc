@@ -6,6 +6,10 @@ import com.rkoubsky.books.exception.DuplicateIsbnException
 import com.rkoubsky.books.exception.InvalidInputException
 import com.rkoubsky.books.repository.AuthorRepository
 import com.rkoubsky.books.repository.BookRepository
+import com.rkoubsky.books.service.model.Book
+import com.rkoubsky.books.service.model.BookFilter
+import com.rkoubsky.books.service.model.CreateBookCommand
+import com.rkoubsky.books.service.model.UpdateBookCommand
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*

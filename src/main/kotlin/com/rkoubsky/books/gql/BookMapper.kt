@@ -1,7 +1,7 @@
 package com.rkoubsky.books.gql
 
-import com.rkoubsky.books.service.Book
-import com.rkoubsky.books.service.BookFilter
+import com.rkoubsky.books.service.model.Book
+import com.rkoubsky.books.service.model.BookFilter
 import org.springframework.stereotype.Component
 
 @Component

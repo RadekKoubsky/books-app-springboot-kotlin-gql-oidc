@@ -1,8 +1,8 @@
 package com.rkoubsky.books.repository
 
 import com.rkoubsky.books.jooq.tables.references.AUTHOR
-import com.rkoubsky.books.service.Author
-import com.rkoubsky.books.service.AuthorFilter
+import com.rkoubsky.books.service.model.Author
+import com.rkoubsky.books.service.model.AuthorFilter
 import org.jooq.Condition
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
@@ -45,7 +45,6 @@ class AuthorRepository(private val dsl: DSLContext) {
     }
 
     fun update(id: UUID, name: String?, surname: String?, bio: String?): Author? {
-        val existing = findById(id) ?: return null
         val now = OffsetDateTime.now()
 
         val updateQuery = dsl.update(AUTHOR)

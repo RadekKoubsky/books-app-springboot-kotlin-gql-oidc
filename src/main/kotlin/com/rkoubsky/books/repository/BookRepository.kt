@@ -2,9 +2,9 @@ package com.rkoubsky.books.repository
 
 import com.rkoubsky.books.jooq.tables.references.AUTHOR
 import com.rkoubsky.books.jooq.tables.references.BOOK
-import com.rkoubsky.books.service.Author
-import com.rkoubsky.books.service.Book
-import com.rkoubsky.books.service.BookFilter
+import com.rkoubsky.books.service.model.Author
+import com.rkoubsky.books.service.model.Book
+import com.rkoubsky.books.service.model.BookFilter
 import org.jooq.Condition
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
