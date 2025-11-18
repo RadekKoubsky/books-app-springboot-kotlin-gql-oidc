@@ -21,8 +21,8 @@ class BookService(
         return bookRepository.findById(id) ?: throw BookNotFoundException(id)
     }
 
-    fun findAll(): List<Book> {
-        return bookRepository.findAll()
+    fun findAll(filter: BookFilter? = null): List<Book> {
+        return bookRepository.findAll(filter)
     }
 
     fun findByTitle(title: String): List<Book> {

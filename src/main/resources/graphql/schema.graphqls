@@ -45,6 +45,12 @@ input UpdateBookInput {
     authorId: ID
 }
 
+input BookFilter {
+    title: String
+    isbn: String
+    publishedYear: Int
+}
+
 type Query {
     # Author queries
     author(id: ID!): Author
@@ -52,7 +58,7 @@ type Query {
 
     # Book queries
     book(id: ID!): Book
-    books: [Book!]!
+    books(filter: BookFilter): [Book!]!
     booksByTitle(title: String!): [Book!]!
     booksByIsbn(isbn: String!): Book
     booksByPublishedYear(publishedYear: Int!): [Book!]!

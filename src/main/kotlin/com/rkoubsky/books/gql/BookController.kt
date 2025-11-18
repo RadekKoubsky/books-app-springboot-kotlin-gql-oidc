@@ -21,8 +21,9 @@ class BookController(
     }
 
     @QueryMapping
-    fun books(): List<BookGQL> {
-        return bookService.findAll().map { bookMapper.toGQL(it) }
+    fun books(@Argument filter: BookFilterGQL?): List<BookGQL> {
+        val domainFilter = bookMapper.mapFilter(filter)
+        return bookService.findAll(domainFilter).map { bookMapper.toGQL(it) }
     }
 
     @QueryMapping
