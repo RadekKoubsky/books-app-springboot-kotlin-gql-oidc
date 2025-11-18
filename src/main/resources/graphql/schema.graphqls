@@ -51,10 +51,15 @@ input BookFilter {
     publishedYear: Int
 }
 
+input AuthorFilter {
+    name: String
+    surname: String
+}
+
 type Query {
     # Author queries
     author(id: ID!): Author
-    authors: [Author!]!
+    authors(filter: AuthorFilter): [Author!]!
 
     # Book queries
     book(id: ID!): Book

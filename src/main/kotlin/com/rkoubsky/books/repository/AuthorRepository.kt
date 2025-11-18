@@ -2,7 +2,10 @@ package com.rkoubsky.books.repository
 
 import com.rkoubsky.books.jooq.tables.references.AUTHOR
 import com.rkoubsky.books.service.Author
+import com.rkoubsky.books.service.AuthorFilter
+import org.jooq.Condition
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 import java.util.*
@@ -17,8 +20,11 @@ class AuthorRepository(private val dsl: DSLContext) {
             ?.let { mapToAuthor(it) }
     }
 
-    fun findAll(): List<Author> {
+    fun findAll(filter: AuthorFilter? = null): List<Author> {
+        val condition = getFilterCondition(filter)
+
         return dsl.selectFrom(AUTHOR)
+            .where(condition)
             .fetch()
             .map { mapToAuthor(it) }
     }
@@ -59,6 +65,22 @@ class AuthorRepository(private val dsl: DSLContext) {
             .where(AUTHOR.ID.eq(id))
             .execute()
         return deleted > 0
+    }
+
+    private fun getFilterCondition(filter: AuthorFilter?): Condition {
+        var condition: Condition = DSL.trueCondition()
+
+        if (filter != null) {
+            if (filter.name != null) {
+                condition = condition.and(AUTHOR.NAME.likeIgnoreCase("%${filter.name}%"))
+            }
+
+            if (filter.surname != null) {
+                condition = condition.and(AUTHOR.SURNAME.likeIgnoreCase("%${filter.surname}%"))
+            }
+        }
+
+        return condition
     }
 
     private fun mapToAuthor(record: org.jooq.Record): Author {
