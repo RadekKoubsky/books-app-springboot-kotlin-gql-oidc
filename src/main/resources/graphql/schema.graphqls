@@ -59,9 +59,6 @@ type Query {
     # Book queries
     book(id: ID!): Book
     books(filter: BookFilter): [Book!]!
-    booksByTitle(title: String!): [Book!]!
-    booksByIsbn(isbn: String!): Book
-    booksByPublishedYear(publishedYear: Int!): [Book!]!
 }
 
 type Mutation {

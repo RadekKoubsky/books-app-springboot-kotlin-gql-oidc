@@ -25,18 +25,6 @@ class BookService(
         return bookRepository.findAll(filter)
     }
 
-    fun findByTitle(title: String): List<Book> {
-        return bookRepository.findByTitle(title)
-    }
-
-    fun findByIsbn(isbn: String): Book? {
-        return bookRepository.findByIsbn(isbn)
-    }
-
-    fun findByPublishedYear(publishedYear: Int): List<Book> {
-        return bookRepository.findByPublishedYear(publishedYear)
-    }
-
     fun findByAuthorId(authorId: UUID): List<Book> {
         return bookRepository.findByAuthorId(authorId)
     }
@@ -44,10 +32,8 @@ class BookService(
     fun create(command: CreateBookCommand): Book {
         validateBookCommand(command.title, command.isbn, command.publishedYear)
 
-        // Check if author exists
         authorRepository.findById(command.authorId) ?: throw AuthorNotFoundException(command.authorId)
 
-        // Check if ISBN already exists
         bookRepository.findByIsbn(command.isbn)?.let {
             throw DuplicateIsbnException(command.isbn)
         }
@@ -58,14 +44,12 @@ class BookService(
     fun update(id: UUID, command: UpdateBookCommand): Book {
         val existing = bookRepository.findById(id) ?: throw BookNotFoundException(id)
 
-        // Validate fields if provided
         val title = command.title ?: existing.title
         val isbn = command.isbn ?: existing.isbn
         val publishedYear = command.publishedYear ?: existing.publishedYear
 
         validateBookCommand(title, isbn, publishedYear)
 
-        // Check if author exists if authorId is being updated
         if (command.authorId != null) {
             authorRepository.findById(command.authorId) ?: throw AuthorNotFoundException(command.authorId)
         }
