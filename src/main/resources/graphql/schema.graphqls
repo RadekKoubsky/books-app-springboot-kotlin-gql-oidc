@@ -13,7 +13,7 @@ type Book {
     id: ID!
     title: String!
     isbn: String!
-    year: Int!
+    publishedYear: Int!
     author: Author!
     createdAt: Date!
     updatedAt: Date!
@@ -34,14 +34,14 @@ input UpdateAuthorInput {
 input CreateBookInput {
     title: String!
     isbn: String!
-    year: Int!
+    publishedYear: Int!
     authorId: ID!
 }
 
 input UpdateBookInput {
     title: String
     isbn: String
-    year: Int
+    publishedYear: Int
     authorId: ID
 }
 
@@ -55,7 +55,7 @@ type Query {
     books: [Book!]!
     booksByTitle(title: String!): [Book!]!
     booksByIsbn(isbn: String!): Book
-    booksByYear(year: Int!): [Book!]!
+    booksByPublishedYear(publishedYear: Int!): [Book!]!
 }
 
 type Mutation {

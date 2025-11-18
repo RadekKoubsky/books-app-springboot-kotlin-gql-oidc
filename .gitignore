@@ -1,0 +1,13 @@
+# Gradle
+.gradle
+/build/
+
+# IntelliJ IDEA
+.idea/
+
+# Log files
+*.log
+logs/
+
+# Kotlin
+.kotlin

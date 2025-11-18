@@ -45,6 +45,7 @@ class GraphQLExceptionHandler : DataFetcherExceptionResolverAdapter() {
                     .build()
             }
             else -> {
+                logger.error("Unexpected error occurred", ex)
                 GraphqlErrorBuilder.newError()
                     .errorType(ErrorType.INTERNAL_ERROR)
                     .message("An unexpected error occurred")

@@ -47,11 +47,11 @@ class BookRepository(private val dsl: DSLContext) {
             ?.let { mapToBookWithAuthor(it) }
     }
 
-    fun findByYear(year: Int): List<Book> {
+    fun findByPublishedYear(publishedYear: Int): List<Book> {
         return dsl.select()
             .from(BOOK)
             .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
-            .where(BOOK.YEAR.eq(year))
+            .where(BOOK.PUBLISHED_YEAR.eq(publishedYear))
             .fetch()
             .map { mapToBookWithAuthor(it) }
     }
@@ -65,24 +65,23 @@ class BookRepository(private val dsl: DSLContext) {
             .map { mapToBookWithAuthor(it) }
     }
 
-    fun create(title: String, isbn: String, year: Int, authorId: UUID): Book {
+    fun create(title: String, isbn: String, publishedYear: Int, authorId: UUID): Book {
         val now = OffsetDateTime.now()
-        val id = UUID.randomUUID()
 
-        dsl.insertInto(BOOK)
-            .set(BOOK.ID, id)
+        val record = dsl.insertInto(BOOK)
             .set(BOOK.TITLE, title)
             .set(BOOK.ISBN, isbn)
-            .set(BOOK.YEAR, year)
+            .set(BOOK.PUBLISHED_YEAR, publishedYear)
             .set(BOOK.AUTHOR_ID, authorId)
             .set(BOOK.CREATED_AT, now)
             .set(BOOK.UPDATED_AT, now)
-            .execute()
+            .returning()
+            .fetchOne()!!
 
-        return findById(id)!!
+        return findById(record.get(BOOK.ID)!!)!!
     }
 
-    fun update(id: UUID, title: String?, isbn: String?, year: Int?, authorId: UUID?): Book? {
+    fun update(id: UUID, title: String?, isbn: String?, publishedYear: Int?, authorId: UUID?): Book? {
         val existing = findById(id) ?: return null
         val now = OffsetDateTime.now()
 
@@ -91,7 +90,7 @@ class BookRepository(private val dsl: DSLContext) {
 
         if (title != null) updateQuery.set(BOOK.TITLE, title)
         if (isbn != null) updateQuery.set(BOOK.ISBN, isbn)
-        if (year != null) updateQuery.set(BOOK.YEAR, year)
+        if (publishedYear != null) updateQuery.set(BOOK.PUBLISHED_YEAR, publishedYear)
         if (authorId != null) updateQuery.set(BOOK.AUTHOR_ID, authorId)
 
         updateQuery.where(BOOK.ID.eq(id)).execute()
@@ -120,7 +119,7 @@ class BookRepository(private val dsl: DSLContext) {
             id = record.get(BOOK.ID)!!,
             title = record.get(BOOK.TITLE)!!,
             isbn = record.get(BOOK.ISBN)!!,
-            year = record.get(BOOK.YEAR)!!,
+            publishedYear = record.get(BOOK.PUBLISHED_YEAR)!!,
             author = author,
             createdAt = record.get(BOOK.CREATED_AT)!!,
             updatedAt = record.get(BOOK.UPDATED_AT)!!

@@ -1,4 +1,5 @@
-version: '3.8'
+# Docker Compose file for Docker Compose CLI v2.40.3
+# Uses Compose Specification (no version field required)
 
 services:
   postgres:
@@ -17,6 +18,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
 
   prometheus:
     image: prom/prometheus:v2.51.0
@@ -30,7 +32,8 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana:10.4.1
@@ -47,7 +50,8 @@ services:
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
       - grafana_data:/var/lib/grafana
     depends_on:
-      - prometheus
+      prometheus:
+        condition: service_started
 
 volumes:
   postgres_data:

@@ -36,8 +36,8 @@ class BookController(
     }
 
     @QueryMapping
-    fun booksByYear(@Argument year: Int): List<BookGQL> {
-        return bookService.findByYear(year).map { bookMapper.toGQL(it) }
+    fun booksByPublishedYear(@Argument publishedYear: Int): List<BookGQL> {
+        return bookService.findByPublishedYear(publishedYear).map { bookMapper.toGQL(it) }
     }
 
     @MutationMapping
@@ -45,7 +45,7 @@ class BookController(
         val command = CreateBookCommand(
             title = input.title,
             isbn = input.isbn,
-            year = input.year,
+            publishedYear = input.publishedYear,
             authorId = input.authorId
         )
         return bookMapper.toGQL(bookService.create(command))
@@ -56,7 +56,7 @@ class BookController(
         val command = UpdateBookCommand(
             title = input.title,
             isbn = input.isbn,
-            year = input.year,
+            publishedYear = input.publishedYear,
             authorId = input.authorId
         )
         return bookMapper.toGQL(bookService.update(id, command))
