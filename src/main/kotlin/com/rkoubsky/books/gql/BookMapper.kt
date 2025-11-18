@@ -24,7 +24,8 @@ class BookMapper(private val authorMapper: AuthorMapper) {
             BookFilter(
                 title = it.title,
                 isbn = it.isbn,
-                publishedYear = it.publishedYear
+                publishedYear = it.publishedYear,
+                authorId = it.authorId
             )
         }
     }

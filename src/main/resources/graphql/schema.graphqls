@@ -49,6 +49,7 @@ input BookFilter {
     title: String
     isbn: String
     publishedYear: Int
+    authorId: ID
 }
 
 input AuthorFilter {

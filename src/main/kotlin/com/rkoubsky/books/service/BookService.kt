@@ -25,10 +25,6 @@ class BookService(
         return bookRepository.findAll(filter)
     }
 
-    fun findByAuthorId(authorId: UUID): List<Book> {
-        return bookRepository.findByAuthorId(authorId)
-    }
-
     fun create(command: CreateBookCommand): Book {
         validateBookCommand(command.title, command.isbn, command.publishedYear)
 

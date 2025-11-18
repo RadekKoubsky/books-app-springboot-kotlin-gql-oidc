@@ -46,7 +46,9 @@ class AuthorService(
 
     fun delete(id: UUID): Boolean {
         authorRepository.findById(id) ?: throw AuthorNotFoundException(id)
-        bookService.findByAuthorId(id).forEach { bookService.delete(it.id) }
+        bookService.findAll(BookFilter(authorId = id)).forEach {
+            bookService.delete(it.id)
+        }
         return authorRepository.delete(id)
     }
 
