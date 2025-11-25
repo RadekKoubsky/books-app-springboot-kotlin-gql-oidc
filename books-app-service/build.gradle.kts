@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.5.7"
     id("io.spring.dependency-management") version "1.1.7"
-    id("nu.studer.jooq") version "8.0"
+    id("nu.studer.jooq") version "8.2.3"
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.spring") version "2.1.0"
 }
@@ -107,10 +107,4 @@ jooq {
             }
         }
     }
-}
-
-// Suppress jOOQ code generation logging
-tasks.named("generateJooq") {
-    logging.captureStandardOutput(LogLevel.WARN)
-    logging.captureStandardError(LogLevel.WARN)
 }
