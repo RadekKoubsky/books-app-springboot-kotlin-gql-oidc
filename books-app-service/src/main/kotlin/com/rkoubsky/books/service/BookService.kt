@@ -70,11 +70,10 @@ class BookService(
             ?: throw BookNotFoundException(id)
     }
 
-    fun delete(id: UUID): Boolean {
-        if (bookPersistence.findById(id) == null) {
-            throw BookNotFoundException(id)
-        }
-        return bookPersistence.delete(id)
+    fun delete(ids: List<UUID>): Int {
+        if (ids.isEmpty()) return 0
+
+        return bookPersistence.delete(ids)
     }
 
     private fun validateBookCommand(title: String, isbn: String, publishedYear: Int) {

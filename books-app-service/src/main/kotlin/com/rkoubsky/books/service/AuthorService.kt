@@ -45,8 +45,9 @@ class AuthorService(
 
     fun delete(id: UUID): Boolean {
         authorPersistence.findById(id) ?: throw AuthorNotFoundException(id)
-        bookService.findAll(BookFilter(authorId = id)).forEach {
-            bookService.delete(it.id)
+        val bookIds = bookService.findAll(BookFilter(authorId = id)).map { it.id }
+        if (bookIds.isNotEmpty()) {
+            bookService.delete(bookIds)
         }
         return authorPersistence.delete(id)
     }

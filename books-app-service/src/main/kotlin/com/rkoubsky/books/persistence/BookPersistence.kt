@@ -103,11 +103,12 @@ class BookPersistence(private val dsl: DSLContext) {
         return findById(id)
     }
 
-    fun delete(id: UUID): Boolean {
+    fun delete(ids: List<UUID>): Int {
+        if (ids.isEmpty()) return 0
         val deleted = dsl.deleteFrom(BOOK)
-            .where(BOOK.ID.eq(id))
+            .where(BOOK.ID.`in`(ids))
             .execute()
-        return deleted > 0
+        return deleted
     }
 
     private fun getFilterCondition(filter: BookFilter?): Condition {

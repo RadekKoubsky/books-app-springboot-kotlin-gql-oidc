@@ -1,6 +1,6 @@
 package com.rkoubsky.books.gql
 
-import com.rkoubsky.books.service.*
+import com.rkoubsky.books.service.BookService
 import com.rkoubsky.books.service.model.CreateBookCommand
 import com.rkoubsky.books.service.model.UpdateBookCommand
 import org.springframework.graphql.data.method.annotation.Argument
@@ -57,7 +57,7 @@ class BookController(
 
     @MutationMapping
     fun deleteBook(@Argument id: UUID): Boolean {
-        return bookService.delete(id)
+        return bookService.delete(listOf(id)) > 0
     }
 
     @SchemaMapping(typeName = "Book", field = "author")
