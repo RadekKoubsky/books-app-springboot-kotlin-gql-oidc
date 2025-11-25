@@ -23,9 +23,14 @@ class BookController(
     }
 
     @QueryMapping
-    fun books(@Argument filter: BookFilterGQL?): List<BookGQL> {
+    fun books(
+        @Argument filter: BookFilterGQL?,
+        @Argument cursor: String?,
+        @Argument limit: Int
+    ): BookListGQL {
         val domainFilter = bookMapper.mapFilter(filter)
-        return bookService.findAll(domainFilter).map { bookMapper.toGQL(it) }
+        val bookPage = bookService.findAllPaginated(domainFilter, cursor, limit)
+        return bookMapper.toBookListGQL(bookPage)
     }
 
     @MutationMapping

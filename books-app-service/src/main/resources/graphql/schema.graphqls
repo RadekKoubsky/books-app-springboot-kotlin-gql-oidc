@@ -10,6 +10,11 @@ type Author {
     updatedAt: Date!
 }
 
+type BookList {
+    books: [Book!]!
+    pageInfo: PageInfo!
+}
+
 type Book {
     id: UUID!
     title: String!
@@ -58,6 +63,11 @@ input AuthorFilter {
     surname: String
 }
 
+type PageInfo {
+    hasNextPage: Boolean
+    endCursor: String
+}
+
 type Query {
     # Author queries
     author(id: UUID!): Author
@@ -65,7 +75,7 @@ type Query {
 
     # Book queries
     book(id: UUID!): Book
-    books(filter: BookFilter): [Book!]!
+    books(filter: BookFilter, cursor: String, limit: Int! = 2): BookList!
 }
 
 type Mutation {

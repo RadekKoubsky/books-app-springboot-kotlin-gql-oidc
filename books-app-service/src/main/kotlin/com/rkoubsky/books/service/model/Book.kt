@@ -33,3 +33,13 @@ data class BookFilter(
     val publishedYear: Int? = null,
     val authorId: UUID? = null,
 )
+
+data class BookList(
+    val books: List<Book>,
+    val pageInfo: PageInfo
+)
+
+data class PageInfo(
+    val hasNextPage: Boolean,
+    val endCursor: String?
+)

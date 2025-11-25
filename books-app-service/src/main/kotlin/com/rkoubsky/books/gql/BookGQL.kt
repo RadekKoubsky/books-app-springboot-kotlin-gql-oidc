@@ -33,3 +33,13 @@ data class BookFilterGQL(
     val publishedYear: Int?,
     val authorId: UUID?
 )
+
+data class BookListGQL(
+    val books: List<BookGQL>,
+    val pageInfo: PageInfoGQL
+)
+
+data class PageInfoGQL(
+    val hasNextPage: Boolean,
+    val endCursor: String?
+)

@@ -2,9 +2,7 @@ package com.rkoubsky.books.persistence
 
 import com.rkoubsky.books.jooq.tables.references.AUTHOR
 import com.rkoubsky.books.jooq.tables.references.BOOK
-import com.rkoubsky.books.service.model.Author
-import com.rkoubsky.books.service.model.Book
-import com.rkoubsky.books.service.model.BookFilter
+import com.rkoubsky.books.service.model.*
 import org.jooq.Condition
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
@@ -33,6 +31,34 @@ class BookPersistence(private val dsl: DSLContext) {
             .where(condition)
             .fetch()
             .map { mapToBookWithAuthor(it) }
+    }
+
+    fun findAllPaginated(filter: BookFilter? = null, cursor: String? = null, limit: Int): BookList {
+        val condition = getFilterCondition(filter)
+
+        val cursorTimestamp = cursor?.let { Cursor.decode(it) }
+
+        val records = dsl.select()
+            .from(BOOK)
+            .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
+            .where(condition)
+            .orderBy(BOOK.CREATED_AT.desc())
+            .seek(cursorTimestamp ?: OffsetDateTime.now())
+            .limit(limit + 1).fetch()
+
+        val hasNextPage = records.size > limit
+
+        val books = records.take(limit).map { mapToBookWithAuthor(it) }
+
+        val endCursor = books.lastOrNull()?.let { Cursor(it.createdAt).encode() }
+
+        return BookList(
+            books = books,
+            pageInfo = PageInfo(
+                hasNextPage = hasNextPage,
+                endCursor = endCursor
+            )
+        )
     }
 
     fun findByIsbn(isbn: String): Book? {

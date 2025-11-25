@@ -8,6 +8,7 @@ import com.rkoubsky.books.persistence.AuthorPersistence
 import com.rkoubsky.books.persistence.BookPersistence
 import com.rkoubsky.books.service.model.Book
 import com.rkoubsky.books.service.model.BookFilter
+import com.rkoubsky.books.service.model.BookList
 import com.rkoubsky.books.service.model.CreateBookCommand
 import com.rkoubsky.books.service.model.UpdateBookCommand
 import org.springframework.stereotype.Service
@@ -27,6 +28,10 @@ class BookService(
 
     fun findAll(filter: BookFilter? = null): List<Book> {
         return bookPersistence.findAll(filter)
+    }
+
+    fun findAllPaginated(filter: BookFilter? = null, cursor: String? = null, limit: Int): BookList {
+        return bookPersistence.findAllPaginated(filter, cursor, limit)
     }
 
     fun create(command: CreateBookCommand): Book {

@@ -2,6 +2,7 @@ package com.rkoubsky.books.gql
 
 import com.rkoubsky.books.service.model.Book
 import com.rkoubsky.books.service.model.BookFilter
+import com.rkoubsky.books.service.model.BookList
 import org.springframework.stereotype.Component
 
 @Component
@@ -28,5 +29,15 @@ class BookMapper(private val authorMapper: AuthorMapper) {
                 authorId = it.authorId
             )
         }
+    }
+
+    fun toBookListGQL(bookList: BookList): BookListGQL {
+        return BookListGQL(
+            books = bookList.books.map { toGQL(it) },
+            pageInfo = PageInfoGQL(
+                hasNextPage = bookList.pageInfo.hasNextPage,
+                endCursor = bookList.pageInfo.endCursor
+            )
+        )
     }
 }
