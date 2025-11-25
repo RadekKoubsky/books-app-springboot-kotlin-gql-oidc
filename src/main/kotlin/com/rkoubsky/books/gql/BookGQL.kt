@@ -7,7 +7,7 @@ data class BookGQL(
     val id: UUID,
     val title: String,
     val isbn: String,
-    val year: Int,
+    val publishedYear: Int,
     val author: AuthorGQL,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime
@@ -16,13 +16,13 @@ data class BookGQL(
 data class CreateBookInputGQL(
     val title: String,
     val isbn: String,
-    val year: Int,
+    val publishedYear: Int,
     val authorId: UUID
 )
 
 data class UpdateBookInputGQL(
     val title: String?,
     val isbn: String?,
-    val year: Int?,
+    val publishedYear: Int?,
     val authorId: UUID?
 )

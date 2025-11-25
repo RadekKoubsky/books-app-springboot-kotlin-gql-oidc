@@ -25,25 +25,17 @@ class AuthorRepository(private val dsl: DSLContext) {
 
     fun create(name: String, surname: String, bio: String?): Author {
         val now = OffsetDateTime.now()
-        val id = UUID.randomUUID()
 
-        dsl.insertInto(AUTHOR)
-            .set(AUTHOR.ID, id)
+        val record = dsl.insertInto(AUTHOR)
             .set(AUTHOR.NAME, name)
             .set(AUTHOR.SURNAME, surname)
             .set(AUTHOR.BIO, bio)
             .set(AUTHOR.CREATED_AT, now)
             .set(AUTHOR.UPDATED_AT, now)
-            .execute()
+            .returning()
+            .fetchOne()!!
 
-        return Author(
-            id = id,
-            name = name,
-            surname = surname,
-            bio = bio,
-            createdAt = now,
-            updatedAt = now
-        )
+        return mapToAuthor(record)
     }
 
     fun update(id: UUID, name: String?, surname: String?, bio: String?): Author? {

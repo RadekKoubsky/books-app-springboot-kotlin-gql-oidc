@@ -11,7 +11,7 @@ class BookMapper(private val authorMapper: AuthorMapper) {
             id = book.id,
             title = book.title,
             isbn = book.isbn,
-            year = book.year,
+            publishedYear = book.publishedYear,
             author = authorMapper.toGQL(book.author),
             createdAt = book.createdAt,
             updatedAt = book.updatedAt

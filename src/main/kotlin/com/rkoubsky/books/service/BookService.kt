@@ -33,8 +33,8 @@ class BookService(
         return bookRepository.findByIsbn(isbn)
     }
 
-    fun findByYear(year: Int): List<Book> {
-        return bookRepository.findByYear(year)
+    fun findByPublishedYear(publishedYear: Int): List<Book> {
+        return bookRepository.findByPublishedYear(publishedYear)
     }
 
     fun findByAuthorId(authorId: UUID): List<Book> {
@@ -42,7 +42,7 @@ class BookService(
     }
 
     fun create(command: CreateBookCommand): Book {
-        validateBookCommand(command.title, command.isbn, command.year)
+        validateBookCommand(command.title, command.isbn, command.publishedYear)
 
         // Check if author exists
         authorRepository.findById(command.authorId) ?: throw AuthorNotFoundException(command.authorId)
@@ -52,7 +52,7 @@ class BookService(
             throw DuplicateIsbnException(command.isbn)
         }
 
-        return bookRepository.create(command.title, command.isbn, command.year, command.authorId)
+        return bookRepository.create(command.title, command.isbn, command.publishedYear, command.authorId)
     }
 
     fun update(id: UUID, command: UpdateBookCommand): Book {
@@ -61,9 +61,9 @@ class BookService(
         // Validate fields if provided
         val title = command.title ?: existing.title
         val isbn = command.isbn ?: existing.isbn
-        val year = command.year ?: existing.year
+        val publishedYear = command.publishedYear ?: existing.publishedYear
 
-        validateBookCommand(title, isbn, year)
+        validateBookCommand(title, isbn, publishedYear)
 
         // Check if author exists if authorId is being updated
         if (command.authorId != null) {
@@ -77,7 +77,7 @@ class BookService(
             }
         }
 
-        return bookRepository.update(id, command.title, command.isbn, command.year, command.authorId)
+        return bookRepository.update(id, command.title, command.isbn, command.publishedYear, command.authorId)
             ?: throw BookNotFoundException(id)
     }
 
@@ -88,7 +88,7 @@ class BookService(
         return bookRepository.delete(id)
     }
 
-    private fun validateBookCommand(title: String, isbn: String, year: Int) {
+    private fun validateBookCommand(title: String, isbn: String, publishedYear: Int) {
         if (title.isBlank()) {
             throw InvalidInputException("Book title cannot be blank")
         }
@@ -98,8 +98,8 @@ class BookService(
         if (isbn.length != 13) {
             throw InvalidInputException("Book ISBN must be 13 characters")
         }
-        if (year < 1000 || year > 9999) {
-            throw InvalidInputException("Book year must be a valid 4-digit year")
+        if (publishedYear < 1000 || publishedYear > 9999) {
+            throw InvalidInputException("Book published year must be a valid 4-digit year")
         }
     }
 }

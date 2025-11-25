@@ -7,7 +7,7 @@ data class Book(
     val id: UUID,
     val title: String,
     val isbn: String,
-    val year: Int,
+    val publishedYear: Int,
     val author: Author,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime
@@ -16,13 +16,13 @@ data class Book(
 data class CreateBookCommand(
     val title: String,
     val isbn: String,
-    val year: Int,
+    val publishedYear: Int,
     val authorId: UUID
 )
 
 data class UpdateBookCommand(
     val title: String?,
     val isbn: String?,
-    val year: Int?,
+    val publishedYear: Int?,
     val authorId: UUID?
 )
