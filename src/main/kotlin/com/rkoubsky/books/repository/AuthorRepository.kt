@@ -1,0 +1,82 @@
+package com.rkoubsky.books.repository
+
+import com.rkoubsky.books.jooq.tables.references.AUTHOR
+import com.rkoubsky.books.service.Author
+import org.jooq.DSLContext
+import org.springframework.stereotype.Repository
+import java.time.OffsetDateTime
+import java.util.*
+
+@Repository
+class AuthorRepository(private val dsl: DSLContext) {
+
+    fun findById(id: UUID): Author? {
+        return dsl.selectFrom(AUTHOR)
+            .where(AUTHOR.ID.eq(id))
+            .fetchOne()
+            ?.let { mapToAuthor(it) }
+    }
+
+    fun findAll(): List<Author> {
+        return dsl.selectFrom(AUTHOR)
+            .fetch()
+            .map { mapToAuthor(it) }
+    }
+
+    fun create(name: String, surname: String, bio: String?): Author {
+        val now = OffsetDateTime.now()
+        val id = UUID.randomUUID()
+
+        dsl.insertInto(AUTHOR)
+            .set(AUTHOR.ID, id)
+            .set(AUTHOR.NAME, name)
+            .set(AUTHOR.SURNAME, surname)
+            .set(AUTHOR.BIO, bio)
+            .set(AUTHOR.CREATED_AT, now)
+            .set(AUTHOR.UPDATED_AT, now)
+            .execute()
+
+        return Author(
+            id = id,
+            name = name,
+            surname = surname,
+            bio = bio,
+            createdAt = now,
+            updatedAt = now
+        )
+    }
+
+    fun update(id: UUID, name: String?, surname: String?, bio: String?): Author? {
+        val existing = findById(id) ?: return null
+        val now = OffsetDateTime.now()
+
+        val updateQuery = dsl.update(AUTHOR)
+            .set(AUTHOR.UPDATED_AT, now)
+
+        if (name != null) updateQuery.set(AUTHOR.NAME, name)
+        if (surname != null) updateQuery.set(AUTHOR.SURNAME, surname)
+        if (bio != null) updateQuery.set(AUTHOR.BIO, bio)
+
+        updateQuery.where(AUTHOR.ID.eq(id)).execute()
+
+        return findById(id)
+    }
+
+    fun delete(id: UUID): Boolean {
+        val deleted = dsl.deleteFrom(AUTHOR)
+            .where(AUTHOR.ID.eq(id))
+            .execute()
+        return deleted > 0
+    }
+
+    private fun mapToAuthor(record: org.jooq.Record): Author {
+        return Author(
+            id = record.get(AUTHOR.ID)!!,
+            name = record.get(AUTHOR.NAME)!!,
+            surname = record.get(AUTHOR.SURNAME)!!,
+            bio = record.get(AUTHOR.BIO),
+            createdAt = record.get(AUTHOR.CREATED_AT)!!,
+            updatedAt = record.get(AUTHOR.UPDATED_AT)!!
+        )
+    }
+}

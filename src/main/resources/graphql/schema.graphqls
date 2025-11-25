@@ -1,0 +1,71 @@
+scalar Date
+
+type Author {
+    id: ID!
+    name: String!
+    surname: String!
+    bio: String
+    createdAt: Date!
+    updatedAt: Date!
+}
+
+type Book {
+    id: ID!
+    title: String!
+    isbn: String!
+    year: Int!
+    author: Author!
+    createdAt: Date!
+    updatedAt: Date!
+}
+
+input CreateAuthorInput {
+    name: String!
+    surname: String!
+    bio: String
+}
+
+input UpdateAuthorInput {
+    name: String
+    surname: String
+    bio: String
+}
+
+input CreateBookInput {
+    title: String!
+    isbn: String!
+    year: Int!
+    authorId: ID!
+}
+
+input UpdateBookInput {
+    title: String
+    isbn: String
+    year: Int
+    authorId: ID
+}
+
+type Query {
+    # Author queries
+    author(id: ID!): Author
+    authors: [Author!]!
+
+    # Book queries
+    book(id: ID!): Book
+    books: [Book!]!
+    booksByTitle(title: String!): [Book!]!
+    booksByIsbn(isbn: String!): Book
+    booksByYear(year: Int!): [Book!]!
+}
+
+type Mutation {
+    # Author mutations
+    createAuthor(input: CreateAuthorInput!): Author!
+    updateAuthor(id: ID!, input: UpdateAuthorInput!): Author!
+    deleteAuthor(id: ID!): Boolean!
+
+    # Book mutations
+    createBook(input: CreateBookInput!): Book!
+    updateBook(id: ID!, input: UpdateBookInput!): Book!
+    deleteBook(id: ID!): Boolean!
+}
