@@ -20,6 +20,14 @@ class AuthorPersistence(private val dsl: DSLContext) {
             ?.let { mapToAuthor(it) }
     }
 
+    fun findByIds(ids: Set<UUID>): List<Author> {
+        if (ids.isEmpty()) return emptyList()
+        return dsl.selectFrom(AUTHOR)
+            .where(AUTHOR.ID.`in`(ids))
+            .fetch()
+            .map { mapToAuthor(it) }
+    }
+
     fun findAll(filter: AuthorFilter? = null): List<Author> {
         val condition = getFilterCondition(filter)
 

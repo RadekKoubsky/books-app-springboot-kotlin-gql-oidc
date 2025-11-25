@@ -8,7 +8,7 @@ data class BookGQL(
     val title: String,
     val isbn: String,
     val publishedYear: Int,
-    val author: AuthorGQL,
+    val authorId: UUID,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime
 )

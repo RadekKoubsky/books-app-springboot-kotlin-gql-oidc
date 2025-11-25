@@ -1,21 +1,29 @@
 package com.rkoubsky.books.gql
 
+import com.rkoubsky.books.service.AuthorService
 import com.rkoubsky.books.service.BookService
+import com.rkoubsky.books.service.model.Author
 import com.rkoubsky.books.service.model.CreateBookCommand
 import com.rkoubsky.books.service.model.UpdateBookCommand
+import org.dataloader.DataLoader
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 @Controller
 class BookController(
     private val bookService: BookService,
+    private val authorService: AuthorService,
     private val bookMapper: BookMapper,
     private val authorMapper: AuthorMapper
 ) {
+    var logger: Logger = LoggerFactory.getLogger(BookController::class.java)
 
     @QueryMapping
     fun book(@Argument id: UUID): BookGQL? {
@@ -61,7 +69,11 @@ class BookController(
     }
 
     @SchemaMapping(typeName = "Book", field = "author")
-    fun author(book: BookGQL): AuthorGQL {
-        return book.author
+    fun author(book: BookGQL, dataLoader: DataLoader<UUID, Author>): CompletableFuture<AuthorGQL> {
+        logger.info("Batch resolving authors")
+
+        return dataLoader.load(book.authorId).thenApply {
+            authorMapper.toGQL(it)
+        }
     }
 }

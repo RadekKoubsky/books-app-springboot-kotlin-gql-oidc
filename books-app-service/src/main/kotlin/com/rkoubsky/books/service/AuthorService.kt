@@ -19,6 +19,10 @@ class AuthorService(
         return authorPersistence.findById(id) ?: throw AuthorNotFoundException(id)
     }
 
+    fun findByIds(ids: Set<UUID>): List<Author> {
+        return authorPersistence.findByIds(ids)
+    }
+
     fun findAll(filter: AuthorFilter? = null): List<Author> {
         return authorPersistence.findAll(filter)
     }

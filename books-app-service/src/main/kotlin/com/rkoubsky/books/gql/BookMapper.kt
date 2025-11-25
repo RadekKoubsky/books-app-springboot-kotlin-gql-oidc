@@ -6,7 +6,7 @@ import com.rkoubsky.books.service.model.BookList
 import org.springframework.stereotype.Component
 
 @Component
-class BookMapper(private val authorMapper: AuthorMapper) {
+class BookMapper {
 
     fun toGQL(book: Book): BookGQL {
         return BookGQL(
@@ -14,7 +14,7 @@ class BookMapper(private val authorMapper: AuthorMapper) {
             title = book.title,
             isbn = book.isbn,
             publishedYear = book.publishedYear,
-            author = authorMapper.toGQL(book.author),
+            authorId = book.authorId,
             createdAt = book.createdAt,
             updatedAt = book.updatedAt
         )

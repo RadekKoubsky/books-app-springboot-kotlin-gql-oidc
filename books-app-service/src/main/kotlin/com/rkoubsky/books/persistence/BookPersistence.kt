@@ -1,6 +1,5 @@
 package com.rkoubsky.books.persistence
 
-import com.rkoubsky.books.jooq.tables.references.AUTHOR
 import com.rkoubsky.books.jooq.tables.references.BOOK
 import com.rkoubsky.books.service.model.*
 import org.jooq.Condition
@@ -16,10 +15,9 @@ class BookPersistence(private val dsl: DSLContext) {
     fun findById(id: UUID): Book? {
         return dsl.select()
             .from(BOOK)
-            .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
             .where(BOOK.ID.eq(id))
             .fetchOne()
-            ?.let { mapToBookWithAuthor(it) }
+            ?.let { mapToBook(it) }
     }
 
     fun findAll(filter: BookFilter? = null): List<Book> {
@@ -27,10 +25,9 @@ class BookPersistence(private val dsl: DSLContext) {
 
         return dsl.select()
             .from(BOOK)
-            .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
             .where(condition)
             .fetch()
-            .map { mapToBookWithAuthor(it) }
+            .map { mapToBook(it) }
     }
 
     fun findAllPaginated(filter: BookFilter? = null, cursor: String? = null, limit: Int): BookList {
@@ -40,7 +37,6 @@ class BookPersistence(private val dsl: DSLContext) {
 
         val records = dsl.select()
             .from(BOOK)
-            .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
             .where(condition)
             .orderBy(BOOK.CREATED_AT.desc())
             .seek(cursorTimestamp ?: OffsetDateTime.now())
@@ -48,7 +44,7 @@ class BookPersistence(private val dsl: DSLContext) {
 
         val hasNextPage = records.size > limit
 
-        val books = records.take(limit).map { mapToBookWithAuthor(it) }
+        val books = records.take(limit).map { mapToBook(it) }
 
         val endCursor = books.lastOrNull()?.let { Cursor(it.createdAt).encode() }
 
@@ -64,10 +60,9 @@ class BookPersistence(private val dsl: DSLContext) {
     fun findByIsbn(isbn: String): Book? {
         return dsl.select()
             .from(BOOK)
-            .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
             .where(BOOK.ISBN.eq(isbn))
             .fetchOne()
-            ?.let { mapToBookWithAuthor(it) }
+            ?.let { mapToBook(it) }
     }
 
     fun create(title: String, isbn: String, publishedYear: Int, authorId: UUID): Book {
@@ -135,22 +130,13 @@ class BookPersistence(private val dsl: DSLContext) {
         return condition
     }
 
-    private fun mapToBookWithAuthor(record: org.jooq.Record): Book {
-        val author = Author(
-            id = record.get(AUTHOR.ID)!!,
-            name = record.get(AUTHOR.NAME)!!,
-            surname = record.get(AUTHOR.SURNAME)!!,
-            bio = record.get(AUTHOR.BIO),
-            createdAt = record.get(AUTHOR.CREATED_AT)!!,
-            updatedAt = record.get(AUTHOR.UPDATED_AT)!!
-        )
-
+    private fun mapToBook(record: org.jooq.Record): Book {
         return Book(
             id = record.get(BOOK.ID)!!,
             title = record.get(BOOK.TITLE)!!,
             isbn = record.get(BOOK.ISBN)!!,
             publishedYear = record.get(BOOK.PUBLISHED_YEAR)!!,
-            author = author,
+            authorId = record.get(BOOK.AUTHOR_ID)!!,
             createdAt = record.get(BOOK.CREATED_AT)!!,
             updatedAt = record.get(BOOK.UPDATED_AT)!!
         )

@@ -8,7 +8,7 @@ data class Book(
     val title: String,
     val isbn: String,
     val publishedYear: Int,
-    val author: Author,
+    val authorId: UUID,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime
 )
