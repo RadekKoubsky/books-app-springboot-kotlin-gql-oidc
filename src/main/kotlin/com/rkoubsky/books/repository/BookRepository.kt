@@ -4,7 +4,10 @@ import com.rkoubsky.books.jooq.tables.references.AUTHOR
 import com.rkoubsky.books.jooq.tables.references.BOOK
 import com.rkoubsky.books.service.Author
 import com.rkoubsky.books.service.Book
+import com.rkoubsky.books.service.BookFilter
+import org.jooq.Condition
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 import java.util.*
@@ -21,10 +24,13 @@ class BookRepository(private val dsl: DSLContext) {
             ?.let { mapToBookWithAuthor(it) }
     }
 
-    fun findAll(): List<Book> {
+    fun findAll(filter: BookFilter? = null): List<Book> {
+        val condition = getFilterCondition(filter)
+
         return dsl.select()
             .from(BOOK)
             .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
+            .where(condition)
             .fetch()
             .map { mapToBookWithAuthor(it) }
     }
@@ -103,6 +109,26 @@ class BookRepository(private val dsl: DSLContext) {
             .where(BOOK.ID.eq(id))
             .execute()
         return deleted > 0
+    }
+
+    private fun getFilterCondition(filter: BookFilter?): Condition {
+        var condition: Condition = DSL.trueCondition()
+
+        if (filter != null) {
+            if (filter.title != null) {
+                condition = condition.and(BOOK.TITLE.likeIgnoreCase("%${filter.title}%"))
+            }
+
+            if (filter.isbn != null) {
+                condition = condition.and(BOOK.ISBN.eq(filter.isbn))
+            }
+
+            if (filter.publishedYear != null) {
+                condition = condition.and(BOOK.PUBLISHED_YEAR.eq(filter.publishedYear))
+            }
+        }
+
+        return condition
     }
 
     private fun mapToBookWithAuthor(record: org.jooq.Record): Book {

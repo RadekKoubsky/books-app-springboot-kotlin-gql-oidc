@@ -1,6 +1,7 @@
 package com.rkoubsky.books.gql
 
 import com.rkoubsky.books.service.Book
+import com.rkoubsky.books.service.BookFilter
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,5 +17,15 @@ class BookMapper(private val authorMapper: AuthorMapper) {
             createdAt = book.createdAt,
             updatedAt = book.updatedAt
         )
+    }
+
+    fun mapFilter(filterGQL: BookFilterGQL?): BookFilter? {
+        return filterGQL?.let {
+            BookFilter(
+                title = it.title,
+                isbn = it.isbn,
+                publishedYear = it.publishedYear
+            )
+        }
     }
 }
