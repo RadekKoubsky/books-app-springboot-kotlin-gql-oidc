@@ -35,15 +35,6 @@ class BookRepository(private val dsl: DSLContext) {
             .map { mapToBookWithAuthor(it) }
     }
 
-    fun findByTitle(title: String): List<Book> {
-        return dsl.select()
-            .from(BOOK)
-            .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
-            .where(BOOK.TITLE.likeIgnoreCase("%$title%"))
-            .fetch()
-            .map { mapToBookWithAuthor(it) }
-    }
-
     fun findByIsbn(isbn: String): Book? {
         return dsl.select()
             .from(BOOK)
@@ -51,15 +42,6 @@ class BookRepository(private val dsl: DSLContext) {
             .where(BOOK.ISBN.eq(isbn))
             .fetchOne()
             ?.let { mapToBookWithAuthor(it) }
-    }
-
-    fun findByPublishedYear(publishedYear: Int): List<Book> {
-        return dsl.select()
-            .from(BOOK)
-            .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
-            .where(BOOK.PUBLISHED_YEAR.eq(publishedYear))
-            .fetch()
-            .map { mapToBookWithAuthor(it) }
     }
 
     fun findByAuthorId(authorId: UUID): List<Book> {

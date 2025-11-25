@@ -26,21 +26,6 @@ class BookController(
         return bookService.findAll(domainFilter).map { bookMapper.toGQL(it) }
     }
 
-    @QueryMapping
-    fun booksByTitle(@Argument title: String): List<BookGQL> {
-        return bookService.findByTitle(title).map { bookMapper.toGQL(it) }
-    }
-
-    @QueryMapping
-    fun booksByIsbn(@Argument isbn: String): BookGQL? {
-        return bookService.findByIsbn(isbn)?.let { bookMapper.toGQL(it) }
-    }
-
-    @QueryMapping
-    fun booksByPublishedYear(@Argument publishedYear: Int): List<BookGQL> {
-        return bookService.findByPublishedYear(publishedYear).map { bookMapper.toGQL(it) }
-    }
-
     @MutationMapping
     fun createBook(@Argument input: CreateBookInputGQL): BookGQL {
         val command = CreateBookCommand(
