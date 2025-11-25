@@ -4,8 +4,8 @@ import com.rkoubsky.books.exception.AuthorNotFoundException
 import com.rkoubsky.books.exception.BookNotFoundException
 import com.rkoubsky.books.exception.DuplicateIsbnException
 import com.rkoubsky.books.exception.InvalidInputException
-import com.rkoubsky.books.repository.AuthorRepository
-import com.rkoubsky.books.repository.BookRepository
+import com.rkoubsky.books.persistence.AuthorPersistence
+import com.rkoubsky.books.persistence.BookPersistence
 import com.rkoubsky.books.service.model.Book
 import com.rkoubsky.books.service.model.BookFilter
 import com.rkoubsky.books.service.model.CreateBookCommand
@@ -17,32 +17,32 @@ import java.util.*
 @Service
 @Transactional
 class BookService(
-    private val bookRepository: BookRepository,
-    private val authorRepository: AuthorRepository
+    private val bookPersistence: BookPersistence,
+    private val authorPersistence: AuthorPersistence
 ) {
 
     fun findById(id: UUID): Book {
-        return bookRepository.findById(id) ?: throw BookNotFoundException(id)
+        return bookPersistence.findById(id) ?: throw BookNotFoundException(id)
     }
 
     fun findAll(filter: BookFilter? = null): List<Book> {
-        return bookRepository.findAll(filter)
+        return bookPersistence.findAll(filter)
     }
 
     fun create(command: CreateBookCommand): Book {
         validateBookCommand(command.title, command.isbn, command.publishedYear)
 
-        authorRepository.findById(command.authorId) ?: throw AuthorNotFoundException(command.authorId)
+        authorPersistence.findById(command.authorId) ?: throw AuthorNotFoundException(command.authorId)
 
-        bookRepository.findByIsbn(command.isbn)?.let {
+        bookPersistence.findByIsbn(command.isbn)?.let {
             throw DuplicateIsbnException(command.isbn)
         }
 
-        return bookRepository.create(command.title, command.isbn, command.publishedYear, command.authorId)
+        return bookPersistence.create(command.title, command.isbn, command.publishedYear, command.authorId)
     }
 
     fun update(id: UUID, command: UpdateBookCommand): Book {
-        val existing = bookRepository.findById(id) ?: throw BookNotFoundException(id)
+        val existing = bookPersistence.findById(id) ?: throw BookNotFoundException(id)
 
         val title = command.title ?: existing.title
         val isbn = command.isbn ?: existing.isbn
@@ -51,25 +51,25 @@ class BookService(
         validateBookCommand(title, isbn, publishedYear)
 
         if (command.authorId != null) {
-            authorRepository.findById(command.authorId) ?: throw AuthorNotFoundException(command.authorId)
+            authorPersistence.findById(command.authorId) ?: throw AuthorNotFoundException(command.authorId)
         }
 
         // Check if ISBN is being changed and if it already exists
         if (command.isbn != null && command.isbn != existing.isbn) {
-            bookRepository.findByIsbn(command.isbn)?.let {
+            bookPersistence.findByIsbn(command.isbn)?.let {
                 throw DuplicateIsbnException(command.isbn)
             }
         }
 
-        return bookRepository.update(id, command.title, command.isbn, command.publishedYear, command.authorId)
+        return bookPersistence.update(id, command.title, command.isbn, command.publishedYear, command.authorId)
             ?: throw BookNotFoundException(id)
     }
 
     fun delete(id: UUID): Boolean {
-        if (bookRepository.findById(id) == null) {
+        if (bookPersistence.findById(id) == null) {
             throw BookNotFoundException(id)
         }
-        return bookRepository.delete(id)
+        return bookPersistence.delete(id)
     }
 
     private fun validateBookCommand(title: String, isbn: String, publishedYear: Int) {

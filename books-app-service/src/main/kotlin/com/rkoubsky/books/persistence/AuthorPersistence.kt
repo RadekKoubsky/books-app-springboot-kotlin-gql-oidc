@@ -1,4 +1,4 @@
-package com.rkoubsky.books.repository
+package com.rkoubsky.books.persistence
 
 import com.rkoubsky.books.jooq.tables.references.AUTHOR
 import com.rkoubsky.books.service.model.Author
@@ -11,7 +11,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 @Repository
-class AuthorRepository(private val dsl: DSLContext) {
+class AuthorPersistence(private val dsl: DSLContext) {
 
     fun findById(id: UUID): Author? {
         return dsl.selectFrom(AUTHOR)

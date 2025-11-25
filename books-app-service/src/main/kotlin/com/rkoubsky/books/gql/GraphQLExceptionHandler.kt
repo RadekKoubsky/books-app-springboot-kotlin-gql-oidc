@@ -1,5 +1,9 @@
-package com.rkoubsky.books.exception
+package com.rkoubsky.books.gql
 
+import com.rkoubsky.books.exception.AuthorNotFoundException
+import com.rkoubsky.books.exception.BookNotFoundException
+import com.rkoubsky.books.exception.DuplicateIsbnException
+import com.rkoubsky.books.exception.InvalidInputException
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
