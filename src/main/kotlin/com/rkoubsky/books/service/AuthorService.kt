@@ -3,6 +3,7 @@ package com.rkoubsky.books.service
 import com.rkoubsky.books.exception.AuthorNotFoundException
 import com.rkoubsky.books.exception.InvalidInputException
 import com.rkoubsky.books.repository.AuthorRepository
+import com.rkoubsky.books.service.model.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -28,9 +29,7 @@ class AuthorService(
     }
 
     fun update(id: UUID, command: UpdateAuthorCommand): Author {
-        if (!authorRepository.findById(id)!!.let { true }) {
-            throw AuthorNotFoundException(id)
-        }
+        authorRepository.findById(id) ?: throw AuthorNotFoundException(id)
 
         if (command.name != null || command.surname != null) {
             val existing = authorRepository.findById(id)!!

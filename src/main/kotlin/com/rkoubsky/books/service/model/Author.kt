@@ -1,4 +1,4 @@
-package com.rkoubsky.books.service
+package com.rkoubsky.books.service.model
 
 import java.time.OffsetDateTime
 import java.util.*

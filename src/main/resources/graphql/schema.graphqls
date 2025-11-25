@@ -1,7 +1,8 @@
 scalar Date
+scalar UUID
 
 type Author {
-    id: ID!
+    id: UUID!
     name: String!
     surname: String!
     bio: String
@@ -10,7 +11,7 @@ type Author {
 }
 
 type Book {
-    id: ID!
+    id: UUID!
     title: String!
     isbn: String!
     publishedYear: Int!
@@ -35,21 +36,21 @@ input CreateBookInput {
     title: String!
     isbn: String!
     publishedYear: Int!
-    authorId: ID!
+    authorId: UUID!
 }
 
 input UpdateBookInput {
     title: String
     isbn: String
     publishedYear: Int
-    authorId: ID
+    authorId: UUID
 }
 
 input BookFilter {
     title: String
     isbn: String
     publishedYear: Int
-    authorId: ID
+    authorId: UUID
 }
 
 input AuthorFilter {
@@ -59,22 +60,22 @@ input AuthorFilter {
 
 type Query {
     # Author queries
-    author(id: ID!): Author
+    author(id: UUID!): Author
     authors(filter: AuthorFilter): [Author!]!
 
     # Book queries
-    book(id: ID!): Book
+    book(id: UUID!): Book
     books(filter: BookFilter): [Book!]!
 }
 
 type Mutation {
     # Author mutations
     createAuthor(input: CreateAuthorInput!): Author!
-    updateAuthor(id: ID!, input: UpdateAuthorInput!): Author!
-    deleteAuthor(id: ID!): Boolean!
+    updateAuthor(id: UUID!, input: UpdateAuthorInput!): Author!
+    deleteAuthor(id: UUID!): Boolean!
 
     # Book mutations
     createBook(input: CreateBookInput!): Book!
-    updateBook(id: ID!, input: UpdateBookInput!): Book!
-    deleteBook(id: ID!): Boolean!
+    updateBook(id: UUID!, input: UpdateBookInput!): Book!
+    deleteBook(id: UUID!): Boolean!
 }

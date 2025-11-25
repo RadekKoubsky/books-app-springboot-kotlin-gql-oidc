@@ -1,6 +1,8 @@
 package com.rkoubsky.books.gql
 
 import com.rkoubsky.books.service.*
+import com.rkoubsky.books.service.model.CreateBookCommand
+import com.rkoubsky.books.service.model.UpdateBookCommand
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
