@@ -10,15 +10,16 @@ import java.util.*
 @Service
 @Transactional
 class AuthorService(
-    private val authorRepository: AuthorRepository
+    private val authorRepository: AuthorRepository,
+    private val bookService: BookService,
 ) {
 
     fun findById(id: UUID): Author {
         return authorRepository.findById(id) ?: throw AuthorNotFoundException(id)
     }
 
-    fun findAll(): List<Author> {
-        return authorRepository.findAll()
+    fun findAll(filter: AuthorFilter? = null): List<Author> {
+        return authorRepository.findAll(filter)
     }
 
     fun create(command: CreateAuthorCommand): Author {
@@ -44,9 +45,8 @@ class AuthorService(
     }
 
     fun delete(id: UUID): Boolean {
-        if (!authorRepository.findById(id)!!.let { true }) {
-            throw AuthorNotFoundException(id)
-        }
+        authorRepository.findById(id) ?: throw AuthorNotFoundException(id)
+        bookService.findByAuthorId(id).forEach { bookService.delete(it.id) }
         return authorRepository.delete(id)
     }
 

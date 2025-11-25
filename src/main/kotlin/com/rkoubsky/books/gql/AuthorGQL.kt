@@ -23,3 +23,8 @@ data class UpdateAuthorInputGQL(
     val surname: String?,
     val bio: String?
 )
+
+data class AuthorFilterGQL(
+    val name: String?,
+    val surname: String?
+)

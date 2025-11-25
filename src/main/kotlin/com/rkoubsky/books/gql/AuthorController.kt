@@ -19,8 +19,9 @@ class AuthorController(
     }
 
     @QueryMapping
-    fun authors(): List<AuthorGQL> {
-        return authorService.findAll().map { authorMapper.toGQL(it) }
+    fun authors(@Argument filter: AuthorFilterGQL?): List<AuthorGQL> {
+        val domainFilter = authorMapper.mapFilter(filter)
+        return authorService.findAll(domainFilter).map { authorMapper.toGQL(it) }
     }
 
     @MutationMapping

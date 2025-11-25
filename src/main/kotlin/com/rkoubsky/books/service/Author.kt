@@ -23,3 +23,8 @@ data class UpdateAuthorCommand(
     val surname: String?,
     val bio: String?
 )
+
+data class AuthorFilter(
+    val name: String?,
+    val surname: String?
+)
