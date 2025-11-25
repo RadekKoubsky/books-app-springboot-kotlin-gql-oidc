@@ -30,5 +30,6 @@ data class UpdateBookInputGQL(
 data class BookFilterGQL(
     val title: String?,
     val isbn: String?,
-    val publishedYear: Int?
+    val publishedYear: Int?,
+    val authorId: UUID?
 )

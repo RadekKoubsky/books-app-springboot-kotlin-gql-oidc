@@ -44,15 +44,6 @@ class BookRepository(private val dsl: DSLContext) {
             ?.let { mapToBookWithAuthor(it) }
     }
 
-    fun findByAuthorId(authorId: UUID): List<Book> {
-        return dsl.select()
-            .from(BOOK)
-            .leftOuterJoin(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
-            .where(BOOK.AUTHOR_ID.eq(authorId))
-            .fetch()
-            .map { mapToBookWithAuthor(it) }
-    }
-
     fun create(title: String, isbn: String, publishedYear: Int, authorId: UUID): Book {
         val now = OffsetDateTime.now()
 
@@ -107,6 +98,10 @@ class BookRepository(private val dsl: DSLContext) {
 
             if (filter.publishedYear != null) {
                 condition = condition.and(BOOK.PUBLISHED_YEAR.eq(filter.publishedYear))
+            }
+
+            if (filter.authorId != null) {
+                condition = condition.and(BOOK.AUTHOR_ID.eq(filter.authorId))
             }
         }
 

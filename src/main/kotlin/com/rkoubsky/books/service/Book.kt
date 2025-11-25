@@ -28,7 +28,8 @@ data class UpdateBookCommand(
 )
 
 data class BookFilter(
-    val title: String?,
-    val isbn: String?,
-    val publishedYear: Int?
+    val title: String? = null,
+    val isbn: String? = null,
+    val publishedYear: Int? = null,
+    val authorId: UUID? = null,
 )
